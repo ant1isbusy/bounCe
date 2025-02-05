@@ -7,16 +7,17 @@
 
 #define BALL_RADIUS 40
 #define BALL_SPEED 5
+#define FPS 240
+#define MILISECS (int) floor((1 / (float) FPS) * 1000)
 
 // link to SDL2 documentation: https://wiki.libsdl.org/SDL2/FrontPage
 
-int main(int argc, char* argv[])
+int main()
 {
   SDL_Init(SDL_INIT_VIDEO);
   SDL_Window* win =
     SDL_CreateWindow("Bouncing Animation", SDL_WINDOWPOS_CENTERED,
                      SDL_WINDOWPOS_CENTERED, WIDTH, HEIGHT, 0);
-  SDL_Surface* surface = SDL_GetWindowSurface(win);
 
   SDL_Renderer* renderer =
     SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED);
@@ -72,7 +73,7 @@ int main(int argc, char* argv[])
 
     SDL_RenderPresent(renderer);
 
-    SDL_Delay(8);  // 8ms is around 120fps, gives me a smooth animation
+    SDL_Delay(MILISECS);
   }
 
   // cleanup
