@@ -6,8 +6,8 @@
 #define HEIGHT 960
 
 #define BALL_RADIUS 40
-#define BALL_SPEED 5
-#define FPS 240
+#define BALL_SPEED 400 // pixels per sec
+#define FPS 75
 #define MILISECS (int) floor((1 / (float) FPS) * 1000)
 
 // link to SDL2 documentation: https://wiki.libsdl.org/SDL2/FrontPage
@@ -22,15 +22,16 @@ int main()
   SDL_Renderer* renderer =
     SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED);
   // initial x, y in the center of the screen
-  int ballX = WIDTH / 2;
-  int ballY = HEIGHT / 2;
+  float ballX = WIDTH / 2.f;
+  float ballY = HEIGHT / 2.f;
 
   // TODO: add physics
-  int ballVelX = BALL_SPEED;
-  int ballVelY = BALL_SPEED;
+  float ballVelX = BALL_SPEED;
+  float ballVelY = BALL_SPEED;
 
   int running = 1;
   SDL_Event event;
+  Uint32 last_tick = SDL_GetTicks();
   while (running)
   {
     while (SDL_PollEvent(&event))
@@ -39,10 +40,13 @@ int main()
       if (event.type == SDL_QUIT)
         running = 0;
     }
+    Uint32 curr_tick = SDL_GetTicks();
+    float dt = (curr_tick - last_tick) / 1000.0f;
+    last_tick = curr_tick;
 
     // linear motion for now, TODO: add gravity and velocity
-    ballX += ballVelX;
-    ballY += ballVelY;
+    ballX += ballVelX * dt;
+    ballY += ballVelY * dt;
 
     // change direction if we touch one of the "walls"
     if (ballX - BALL_RADIUS < 0 || ballX + BALL_RADIUS > WIDTH)
@@ -66,7 +70,7 @@ int main()
         if (w * w + h * h <= BALL_RADIUS * BALL_RADIUS)
         {
           // add pixel to backbuffer
-          SDL_RenderDrawPoint(renderer, ballX + w, ballY + h);
+          SDL_RenderDrawPoint(renderer, (int)ballX + w, (int)ballY + h);
         }
       }
     }
