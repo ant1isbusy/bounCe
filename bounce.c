@@ -1,5 +1,4 @@
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_video.h>
 #include <stdio.h>
 #include <time.h>
 #include <math.h>
@@ -9,18 +8,19 @@
 
 #define BALL_RADIUS 40
 #define BALL_SPEED 500 // pixels per sec
-#define FPS 144
+#define FPS 120
+#define GRAVITY 98.f
 #define MILISECS (int)floor((1 / (float)FPS) * 1000)
 #define NUM_BALLS 8
 #define NUM_COLORS 5 // dont forget to update once adding colors
-#define WALLS_FACTOR 1.0f
+#define WALLS_FACTOR 1.f
 
 const int COLORS[NUM_COLORS][3] = {
     {255, 0, 0},   // red
     {255, 128, 0}, // orange
     {255, 255, 0}, // yellow
     {0, 200, 0},   // green
-    {0, 100, 255}    // blue
+    {0, 100, 255}  // blue
 };
 
 // link to SDL2 documentation: https://wiki.libsdl.org/SDL2/FrontPage
@@ -87,6 +87,7 @@ void updateBalls(Ball *balls, Uint32 *last_tick)
 
   for (int i = 0; i < NUM_BALLS; i++)
   {
+    // balls[i].velY += GRAVITY * dt;
     balls[i].x += balls[i].velX * dt;
     balls[i].y += balls[i].velY * dt;
 
@@ -213,7 +214,7 @@ int main()
     updateBalls(balls, &last_tick);
 
     // clear canvas
-    SDL_SetRenderDrawColor(renderer, 20, 20, 40, 255);
+    SDL_SetRenderDrawColor(renderer, 30, 30, 30, 255);
     SDL_RenderClear(renderer);
 
     // Draw the ball
