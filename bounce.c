@@ -1,6 +1,7 @@
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_video.h>
 #include <stdio.h>
+#include <time.h>
 
 #define WIDTH 1280
 #define HEIGHT 960
@@ -8,26 +9,47 @@
 #define BALL_RADIUS 40
 #define BALL_SPEED 400 // pixels per sec
 #define FPS 75
-#define MILISECS (int) floor((1 / (float) FPS) * 1000)
+#define MILISECS (int)floor((1 / (float)FPS) * 1000)
 
 // link to SDL2 documentation: https://wiki.libsdl.org/SDL2/FrontPage
 
+typedef struct {
+  float x;
+  float y;
+  float velX;
+  float velY;
+  int radius; // in pixels
+};
+
+int getRandomSpeed()
+{
+  int rval = rand() % BALL_SPEED + (BALL_SPEED / 2);
+  if (rval % 2 == 0)
+  {
+    rval = -rval;
+  }
+  return rval;
+}
+
 int main()
 {
+  srand(time(NULL));
   SDL_Init(SDL_INIT_VIDEO);
-  SDL_Window* win =
-    SDL_CreateWindow("Bouncing Animation", SDL_WINDOWPOS_CENTERED,
-                     SDL_WINDOWPOS_CENTERED, WIDTH, HEIGHT, 0);
+  SDL_Window *win =
+      SDL_CreateWindow("Bouncing Animation", SDL_WINDOWPOS_CENTERED,
+                       SDL_WINDOWPOS_CENTERED, WIDTH, HEIGHT, 0);
 
-  SDL_Renderer* renderer =
-    SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED);
+  SDL_Renderer *renderer =
+      SDL_CreateRenderer(win, -1, SDL_RENDERER_ACCELERATED);
   // initial x, y in the center of the screen
   float ballX = WIDTH / 2.f;
   float ballY = HEIGHT / 2.f;
 
   // TODO: add physics
-  float ballVelX = BALL_SPEED;
-  float ballVelY = BALL_SPEED;
+  float ballVelX = getRandomSpeed();
+  printf("X: %.2f, Y: ", ballVelX);
+  float ballVelY = getRandomSpeed();
+  printf("%.2f\n", ballVelY);
 
   int running = 1;
   SDL_Event event;
@@ -59,7 +81,7 @@ int main()
     SDL_RenderClear(renderer);
 
     // Draw the ball
-    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);  // White ball
+    SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255); // White ball
     for (int w = -BALL_RADIUS; w <= BALL_RADIUS; w++)
     {
       for (int h = -BALL_RADIUS; h <= BALL_RADIUS; h++)
