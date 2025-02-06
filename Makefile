@@ -4,26 +4,20 @@ CFLAGS = -Wall -Wextra -std=c11
 LDFLAGS = `pkg-config --cflags --libs sdl2` -lm -lSDL2_gfx
 
 TARGET = bounce
-
 SRC = bounce.c
-OBJ = $(SRC:.c=.o)
 
-all: bin
+all: $(TARGET)
 
-bin: $(OBJ)
-	$(CC) $(CFLAGS) -o $(TARGET) $(OBJ) $(LDFLAGS)
-
-# Compile individual source files
-%.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+$(TARGET): $(SRC)
+	$(CC) $(CFLAGS) -o $(TARGET) $(SRC) $(LDFLAGS)
 
 # Run the program
-run: bin
+run: $(TARGET)
 	./$(TARGET)
 
 # Clean up build files
 clean:
-	rm -f $(OBJ) $(TARGET)
+	rm -f $(TARGET)
 
-# Phony targets (not actual files)
-.PHONY: all bin run clean
+# Phony targets
+.PHONY: all run clean

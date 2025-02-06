@@ -8,16 +8,16 @@
 #define HEIGHT 960
 
 #define BALL_RADIUS 40
-#define BALL_SPEED 500 // pixels per sec
+#define BALL_SPEED 300 // pixels per sec
 #define FPS 60
-#define GRAVITY 98.f
+#define GRAVITY 200.f
 #define MILISECS (int)floor((1 / (float)FPS) * 1000)
 #define NUM_BALLS 7
 #define NUM_COLORS 5 // dont forget to update once adding colors
-#define WALLS_FACTOR 1.f
+#define WALLS_FACTOR 0.96f
 #define TRAIL_LEN 200
-#define TRAILS_ACTIVATED 1
-#define ALL_WHITE 1
+#define TRAILS_ACTIVATED 0
+#define ALL_WHITE 0
 
 const int COLORS[NUM_COLORS][3] = {
     {255, 0, 0},   // red
@@ -97,7 +97,7 @@ void updateBalls(Ball *balls, Uint32 *last_tick)
 
   for (int i = 0; i < NUM_BALLS; i++)
   {
-    // balls[i].velY += GRAVITY * dt;
+    balls[i].velY += GRAVITY * dt;
     balls[i].x += balls[i].velX * dt;
     balls[i].y += balls[i].velY * dt;
 
@@ -121,15 +121,14 @@ void updateBalls(Ball *balls, Uint32 *last_tick)
     }
     if (balls[i].y - balls[i].radius < 0)
     {
-      balls[i].velY = -balls[i].velY;
+      balls[i].velY = -balls[i].velY * 0.8f;
+      // balls[i].velX = balls[i].velX * 0.8f;
       balls[i].y = balls[i].radius;
-      hit = 1;
     }
     else if (balls[i].y + balls[i].radius > HEIGHT)
     {
-      balls[i].velY = -balls[i].velY;
+      balls[i].velY = -balls[i].velY * 1.1f; // bounce of bottom
       balls[i].y = HEIGHT - balls[i].radius;
-      hit = 1;
     }
     if (hit)
     {
