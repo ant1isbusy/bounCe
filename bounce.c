@@ -4,19 +4,19 @@
 #include <time.h>
 #include <math.h>
 
-#define WIDTH 1280
-#define HEIGHT 960
+#define WIDTH 1500
+#define HEIGHT 800
 
 #define BALL_RADIUS 40
-#define BALL_SPEED 300 // pixels per sec
+#define BALL_SPEED 500 // pixels per sec
 #define FPS 60
-#define GRAVITY 200.f
+#define GRAVITY 300.f
 #define MILISECS (int)floor((1 / (float)FPS) * 1000)
 #define NUM_BALLS 7
 #define NUM_COLORS 5 // dont forget to update once adding colors
-#define WALLS_FACTOR 0.96f
+#define WALLS_FACTOR 0.98f
 #define TRAIL_LEN 200
-#define TRAILS_ACTIVATED 0
+#define TRAILS_ACTIVATED 1
 #define ALL_WHITE 0
 
 const int COLORS[NUM_COLORS][3] = {
@@ -97,7 +97,11 @@ void updateBalls(Ball *balls, Uint32 *last_tick)
 
   for (int i = 0; i < NUM_BALLS; i++)
   {
-    balls[i].velY += GRAVITY * dt;
+    // air resistance
+   /*  balls[i].velX *= 0.999f;
+    balls[i].velY *= 0.999f; */
+
+    balls[i].velY += GRAVITY * dt; // plus is down!
     balls[i].x += balls[i].velX * dt;
     balls[i].y += balls[i].velY * dt;
 
@@ -127,7 +131,7 @@ void updateBalls(Ball *balls, Uint32 *last_tick)
     }
     else if (balls[i].y + balls[i].radius > HEIGHT)
     {
-      balls[i].velY = -balls[i].velY * 1.1f; // bounce of bottom
+      balls[i].velY = -balls[i].velY * 1.05f; // bounce off bottom
       balls[i].y = HEIGHT - balls[i].radius;
     }
     if (hit)
