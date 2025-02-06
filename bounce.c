@@ -4,15 +4,15 @@
 #include <time.h>
 #include <math.h>
 
-#define WIDTH 1500
-#define HEIGHT 800
+#define WIDTH 1280
+#define HEIGHT 720
 
-#define BALL_RADIUS 40
+#define BALL_RADIUS 30
 #define BALL_SPEED 500 // pixels per sec
 #define FPS 60
 #define GRAVITY 300.f
 #define MILISECS (int)floor((1 / (float)FPS) * 1000)
-#define NUM_BALLS 7
+#define NUM_BALLS 10
 #define NUM_COLORS 5 // dont forget to update once adding colors
 #define WALLS_FACTOR 0.98f
 #define TRAIL_LEN 200
