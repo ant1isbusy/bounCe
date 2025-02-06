@@ -1,4 +1,5 @@
 #include <SDL2/SDL.h>
+#include <SDL2/SDL2_gfxPrimitives.h>
 #include <stdio.h>
 #include <time.h>
 #include <math.h>
@@ -8,19 +9,22 @@
 
 #define BALL_RADIUS 40
 #define BALL_SPEED 500 // pixels per sec
-#define FPS 120
+#define FPS 60
 #define GRAVITY 98.f
 #define MILISECS (int)floor((1 / (float)FPS) * 1000)
-#define NUM_BALLS 8
+#define NUM_BALLS 7
 #define NUM_COLORS 5 // dont forget to update once adding colors
 #define WALLS_FACTOR 1.f
+#define TRAIL_LEN 200
+#define TRAILS_ACTIVATED 1
+#define ALL_WHITE 1
 
 const int COLORS[NUM_COLORS][3] = {
     {255, 0, 0},   // red
     {255, 128, 0}, // orange
     {255, 255, 0}, // yellow
     {0, 200, 0},   // green
-    {0, 100, 255}  // blue
+    {0, 100, 200}  // blue
 };
 
 // link to SDL2 documentation: https://wiki.libsdl.org/SDL2/FrontPage
@@ -38,6 +42,9 @@ typedef struct
   float velY;
   int radius; // in pixels
   RGB c;
+  float trailXs[TRAIL_LEN];
+  float trailYs[TRAIL_LEN];
+  int t_index;
 } Ball;
 
 int getRandomSpeed()
@@ -52,6 +59,8 @@ int getRandomSpeed()
 
 RGB getRandomCol()
 {
+  if (ALL_WHITE)
+    return (RGB){255,255,255};
   int idx = rand() % NUM_COLORS;
   RGB col = {COLORS[idx][0], COLORS[idx][1], COLORS[idx][2]};
   return col;
@@ -72,6 +81,7 @@ void initBalls(Ball *balls)
     balls[i].velY = getRandomSpeed();
     balls[i].c = getRandomCol();
     balls[i].radius = BALL_RADIUS;
+    balls[i].t_index = 0;
 
     angle += 0.3; // half a radian per iteration
     radius += 2 * BALL_RADIUS;
@@ -90,6 +100,10 @@ void updateBalls(Ball *balls, Uint32 *last_tick)
     // balls[i].velY += GRAVITY * dt;
     balls[i].x += balls[i].velX * dt;
     balls[i].y += balls[i].velY * dt;
+
+    balls[i].trailXs[balls[i].t_index] = balls[i].x;
+    balls[i].trailYs[balls[i].t_index] = balls[i].y;
+    balls[i].t_index = (balls[i].t_index + 1) % TRAIL_LEN;
 
     int hit = 0;
     // Wall check and seperation from wall (window border)
@@ -181,6 +195,15 @@ void renderBalls(SDL_Renderer *renderer, Ball *balls)
           // add pixel to backbuffer
           SDL_RenderDrawPoint(renderer, (int)balls[i].x + w, (int)balls[i].y + h);
         }
+      }
+    }
+    if (TRAILS_ACTIVATED)
+    {
+      for (size_t j = 0; j < TRAIL_LEN; j++)
+      {
+        int alpha = (int)((1.0f - (float)j / TRAIL_LEN) * 255);
+        SDL_SetRenderDrawColor(renderer, balls[i].c.r, balls[i].c.g, balls[i].c.b, alpha);
+        SDL_RenderDrawPoint(renderer, (int)balls[i].trailXs[j], (int)balls[i].trailYs[j]);
       }
     }
   }

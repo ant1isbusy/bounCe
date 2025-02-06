@@ -1,7 +1,7 @@
 # Compiler and flags
 CC = gcc
 CFLAGS = -Wall -Wextra -std=c11
-LDFLAGS = `pkg-config --cflags --libs sdl2` -lm
+LDFLAGS = `pkg-config --cflags --libs sdl2` -lm -lSDL2_gfx
 
 TARGET = bounce
 
